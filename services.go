@@ -8,19 +8,19 @@ import (
 	"github.com/lightninglabs/aperture/proxy"
 )
 
-// staticServiceLimiter provides static restrictions for services.
+// StaticServiceLimiter provides static restrictions for services.
 //
 // TODO(wilmer): use etcd instead.
 type StaticServiceLimiter struct {
-	capabilities map[lsat.Service]lsat.Caveat
-	constraints  map[lsat.Service][]lsat.Caveat
+	Capabilities map[lsat.Service]lsat.Caveat
+	Constraints  map[lsat.Service][]lsat.Caveat
 }
 
-// A compile-time constraint to ensure staticServiceLimiter implements
+// A compile-time constraint to ensure StaticServiceLimiter implements
 // mint.ServiceLimiter.
 var _ mint.ServiceLimiter = (*StaticServiceLimiter)(nil)
 
-// newStaticServiceLimiter instantiates a new static service limiter backed by
+// NewStaticServiceLimiter instantiates a new static service limiter backed by
 // the given restrictions.
 func NewStaticServiceLimiter(proxyServices []*proxy.Service) *StaticServiceLimiter {
 	capabilities := make(map[lsat.Service]lsat.Caveat)
@@ -42,8 +42,8 @@ func NewStaticServiceLimiter(proxyServices []*proxy.Service) *StaticServiceLimit
 	}
 
 	return &StaticServiceLimiter{
-		capabilities: capabilities,
-		constraints:  constraints,
+		Capabilities: capabilities,
+		Constraints:  constraints,
 	}
 }
 
@@ -54,7 +54,7 @@ func (l *StaticServiceLimiter) ServiceCapabilities(ctx context.Context,
 
 	res := make([]lsat.Caveat, 0, len(services))
 	for _, service := range services {
-		capabilities, ok := l.capabilities[service]
+		capabilities, ok := l.Capabilities[service]
 		if !ok {
 			continue
 		}
@@ -71,7 +71,7 @@ func (l *StaticServiceLimiter) ServiceConstraints(ctx context.Context,
 
 	res := make([]lsat.Caveat, 0, len(services))
 	for _, service := range services {
-		constraints, ok := l.constraints[service]
+		constraints, ok := l.Constraints[service]
 		if !ok {
 			continue
 		}
