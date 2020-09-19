@@ -11,18 +11,18 @@ import (
 // staticServiceLimiter provides static restrictions for services.
 //
 // TODO(wilmer): use etcd instead.
-type staticServiceLimiter struct {
+type StaticServiceLimiter struct {
 	capabilities map[lsat.Service]lsat.Caveat
 	constraints  map[lsat.Service][]lsat.Caveat
 }
 
 // A compile-time constraint to ensure staticServiceLimiter implements
 // mint.ServiceLimiter.
-var _ mint.ServiceLimiter = (*staticServiceLimiter)(nil)
+var _ mint.ServiceLimiter = (*StaticServiceLimiter)(nil)
 
 // newStaticServiceLimiter instantiates a new static service limiter backed by
 // the given restrictions.
-func newStaticServiceLimiter(proxyServices []*proxy.Service) *staticServiceLimiter {
+func NewStaticServiceLimiter(proxyServices []*proxy.Service) *StaticServiceLimiter {
 	capabilities := make(map[lsat.Service]lsat.Caveat)
 	constraints := make(map[lsat.Service][]lsat.Caveat)
 
@@ -41,7 +41,7 @@ func newStaticServiceLimiter(proxyServices []*proxy.Service) *staticServiceLimit
 		}
 	}
 
-	return &staticServiceLimiter{
+	return &StaticServiceLimiter{
 		capabilities: capabilities,
 		constraints:  constraints,
 	}
@@ -49,7 +49,7 @@ func newStaticServiceLimiter(proxyServices []*proxy.Service) *staticServiceLimit
 
 // ServiceCapabilities returns the capabilities caveats for each service. This
 // determines which capabilities of each service can be accessed.
-func (l *staticServiceLimiter) ServiceCapabilities(ctx context.Context,
+func (l *StaticServiceLimiter) ServiceCapabilities(ctx context.Context,
 	services ...lsat.Service) ([]lsat.Caveat, error) {
 
 	res := make([]lsat.Caveat, 0, len(services))
@@ -66,7 +66,7 @@ func (l *staticServiceLimiter) ServiceCapabilities(ctx context.Context,
 
 // ServiceConstraints returns the constraints for each service. This enforces
 // additional constraints on a particular service/service capability.
-func (l *staticServiceLimiter) ServiceConstraints(ctx context.Context,
+func (l *StaticServiceLimiter) ServiceConstraints(ctx context.Context,
 	services ...lsat.Service) ([]lsat.Caveat, error) {
 
 	res := make([]lsat.Caveat, 0, len(services))
