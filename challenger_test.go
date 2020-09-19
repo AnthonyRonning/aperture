@@ -93,14 +93,14 @@ func newChallenger() (*LndChallenger, *mockInvoiceClient) {
 	invoicesMtx := &sync.Mutex{}
 	var c *LndChallenger
 	c = &LndChallenger{
-		client:        mockClient,
-		genInvoiceReq: genInvoiceReq,
+		Client:        mockClient,
+		GenInvoiceReq: genInvoiceReq,
 		invoiceStates: make(map[lntypes.Hash]lnrpc.Invoice_InvoiceState),
 		quit:          make(chan struct{}),
 		invoicesMtx:   invoicesMtx,
 		invoicesCond:  sync.NewCond(invoicesMtx),
 	}
-	c.verifyInvoiceStatus = c.DefaultVerifyInvoiceStatus
+	c.VerifyInvoiceStatusFunc = c.DefaultVerifyInvoiceStatus
 
 	return c, mockClient
 }
